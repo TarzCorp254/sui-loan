@@ -1,39 +1,124 @@
-Introduction
+INTRODUCTION
 
-The loan module enables users to borrow and repay loans with interest. It supports creating loan platforms, issuing loans, and managing repayments within the Sui Move framework.
+This module implements a loan system that allows users to borrow and repay loans with interest. It supports creating loan platforms, issuing loans, and managing loan repayments. The module uses Sui Move and includes structures and functions to handle loans, interest calculations, and interactions with the loan platform.
 
-Key Structures
+KEY STRUCTURES
 
-- LoanAccount: Stores individual loan details including loan amount, dates, and user address.
-- LoanPlatform: Represents the loan system platform, containing balance and interest rate.
-- LoanPlatformCap: Ensures authorized management of the loan platform.
-- Protocol: Manages the protocol's balance.
-- AdminCap: Ensures only admins can withdraw fees.
+LoanAccount
 
-Core Functions
+Stores individual loan details for users:
+- id: Unique identifier of the loan.
+- inner: Address of the loan account.
+- loan_date: Timestamp of when the loan was issued.
+- last_payment_date: Timestamp of the last repayment.
+- loan_due_date: Due date for the loan repayment.
+- loan_amount: The principal amount of the loan.
+- user_address: Address of the user who took the loan.
 
-- new_loan_platform: Creates a new loan platform with a specified interest rate.
-- issue_loan: Issues a loan to a user and returns a LoanAccount.
-- repay_loan: Processes the repayment of a loan.
-- withdraw_fee: Allows admins to withdraw protocol fees.
-- withdraw_loan: Withdraws loan balance from the platform.
+LoanPlatform
+
+Represents the platform's loan system:
+- id: Unique identifier of the loan platform.
+- inner: Internal ID for the platform.
+- balance: A Bag containing the platform's balance.
+- interest_rate: Interest rate applied to loans.
+
+LoanPlatformCap
+
+Ensures that only authorized entities can manage the loan platform:
+- id: Unique identifier of the cap.
+- platform: Internal ID of the associated loan platform.
+
+Protocol
+
+Manages the protocol's balance:
+- id: Unique identifier.
+- balance: A Bag containing the protocol's balance.
+
+AdminCap
+
+Ensures only admins can withdraw fees:
+- id: Unique identifier.
+
+CORE FUNCTIONS
+
+new_loan_platform
+
+Creates a new loan platform with a specified interest rate.
+- Parameters: `interest_rate`, `ctx`
+- Returns: Transfers LoanPlatformCap to the caller.
+
+issue_loan
+
+Issues a loan to a user.
+- Parameters: `protocol`, `loan_platform`, `clock`, `coin_metadata`, `coin`, `ctx`
+- Returns: `LoanAccount`
+
+repay_loan
+
+Repays a user's loan.
+- Parameters: `protocol`, `loan_platform`, `loan_acc`, `clock`, `coin_metadata`, `coin`, `ctx`
+
+withdraw_fee
+
+Withdraws protocol fees.
+- Parameters: `admin_cap`, `protocol`, `coin`, `ctx`
+- Returns: `Coin`
+
+withdraw_loan
+
+Withdraws loan balance from the platform.
+- Parameters: `loan_platform`, `cap`, `coin`, `ctx`
+- Returns: `Coin`
 
 Error Constants
 
-- EInsufficientFunds (1): Triggered when there are insufficient funds to process the loan.
-- EInvalidCap (4): Triggered by an invalid loan cap.
+- EInsufficientFunds (1): Insufficient funds to process the loan.
+- EInvalidCap (4): Invalid loan cap.
 
 Interest Rate
 
-- Set at 5%
+- INTEREST_RATE: 5%
 
-Helper Functions
+HELPER FUNCTIONS
 
-- helper_bag: Manages balances within a Bag.
+helper_bag
 
-Accessor Functions
-- Fetch various loan details such as issuance date, loan ID, last payment date, due date, and owner address.
+Helper function to manage balances within a Bag.
+- Parameters: `bag`, `coin`, `balance`
 
-Summary
+ACCESOR FUNCTIONS
 
-The module facilitates secure and efficient loan management by allowing the creation and administration of loan platforms, issuing loans, and handling repayments. It includes error handling and interest rate management, ensuring a robust loan system within the Sui Move ecosystem.
+get_loan_date
+
+Fetches the loan issuance date.
+- Parameters: `loan_account`
+- Returns: `u64`
+
+get_loan_id
+
+Fetches the loan account ID.
+- Parameters: `loan_account`
+- Returns: `address`
+
+get_last_payment_date
+
+Fetches the last repayment date.
+- Parameters: `loan_account`
+- Returns: `u64`
+
+get_loan_due_date
+
+Fetches the loan due date.
+- Parameters: `loan_account`
+- Returns: `u64`
+
+get_loan_owner
+
+Fetches the loan owner address.
+- Parameters: `loan_account`
+- Returns: `address`
+
+SUMMARY
+
+This module allows the creation and management of loan platforms, issuance and repayment of loans, and administration of platform balances. It includes detailed error handling, interest rate application, and accessor functions to retrieve loan details. The provided functions ensure secure and efficient loan management within the Sui Move ecosystem.
