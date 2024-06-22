@@ -22,6 +22,7 @@ module loan::loan {
         loan_due_date: u64,
         loan_amount: u64,
         user_address: address,
+        
     }
     
 
