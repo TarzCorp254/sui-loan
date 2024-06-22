@@ -23,6 +23,7 @@ module loan::loan {
         loan_amount: u64,
         user_address: address,
     }
+    
 
     // Type that represents the platform's loan system:
     public struct LoanPlatform<phantom COIN> has key, store {

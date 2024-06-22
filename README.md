@@ -13,7 +13,7 @@ Stores individual loan details for users:
 - last_payment_date: Timestamp of the last repayment.
 - loan_due_date: Due date for the loan repayment.
 - loan_amount: The principal amount of the loan.
-- user_address: Address of the user who took the loan.
+- user_address: Address of the user who took the  loan.
 
 LoanPlatform
 
