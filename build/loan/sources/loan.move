@@ -13,7 +13,7 @@ module loan::loan { // Define the module loan::loan
     const INTEREST_RATE: u128 = 5; // Interest rate constant
 
     // Type that stores user loan data:
-    public struct LoanAccount<phantom COIN> has key { // Define LoanAccount struct with a phantom type parameter COIN and key ability
+    public struct LoanAccount<phantom COIN> has key, store { // Define LoanAccount struct with a phantom type parameter COIN and key ability
         id: UID, // Unique identifier for the loan
         inner: address, // Address of the loan account
         loan_date: u64, // Timestamp of when the loan was issued

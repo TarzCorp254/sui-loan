@@ -1,7 +1,6 @@
 #[test_only]
 module loan::helpers {
     use sui::test_scenario::{Self as ts, next_tx,Scenario};
-    use loan::usdc::{init_for_testing_usdc, USDC};
     use sui::coin::{Self, Coin, mint_for_testing, CoinMetadata};
     use sui::sui::SUI;
     use sui::balance:: {Self, Balance};
@@ -9,6 +8,7 @@ module loan::helpers {
     use std::string::{Self,String};
 
     use loan::loan::{Self, AdminCap, test_init};
+    use loan::usdc::{Self, USDC, init_for_testing_usdc};
 
     const ADMIN: address = @0xA;
     const TEST_ADDRESS1: address = @0xB;
@@ -20,6 +20,9 @@ module loan::helpers {
  
        {
         test_init(ts::ctx(scenario));
+       };
+       {
+        init_for_testing_usdc(ts::ctx(scenario));
        };
        scenario_val
     }
