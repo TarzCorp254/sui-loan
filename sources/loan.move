@@ -5,6 +5,7 @@ module loan::loan { // Define the module loan::loan
     use sui::bag::{Self, Bag}; // Import Bag from sui::bag
     use sui::clock::{Self, Clock, timestamp_ms}; // Import Clock, timestamp_ms from sui::clock
     use std::string::{Self, String}; // Import String from std::string
+    use std::debug;
 
     /// Error Constants ///
     const EInsufficientFunds: u64 = 1; // Error code for insufficient funds
@@ -86,14 +87,10 @@ module loan::loan { // Define the module loan::loan
         let protocol_balance = coin::into_balance(protocol_fee); // Convert protocol fee to balance
         let loan_balance = coin::into_balance(coin); // Convert remaining coin to balance
 
-        let protocol_bag = &mut protocol.balance; // Get protocol's balance bag
-        let loan_platform_bag = &mut loan_platform.balance; // Get loan platform's balance bag
-
         let _name = coin::get_name(coin_metadata); // Get the coin name
-        let coin_names = string::utf8(b"coins"); // Convert byte string to UTF-8 string
-
-        helper_bag(protocol_bag, coin_names, protocol_balance); // Update protocol bag with protocol balance
-        helper_bag(loan_platform_bag, coin_names, loan_balance); // Update loan platform bag with loan balance
+    
+        helper_bag(&mut protocol.balance, _name, protocol_balance); // Update protocol bag with protocol balance
+        helper_bag(&mut loan_platform.balance, _name, loan_balance); // Update loan platform bag with loan balance
 
         let id_ = object::new(ctx); // Create a new unique identifier
         let inner_ = object::uid_to_address(&id_);  // Convert UID to address
@@ -133,10 +130,9 @@ module loan::loan { // Define the module loan::loan
         let loan_platform_bag = &mut loan_platform.balance; // Get loan platform's balance bag
 
         let _name = coin::get_name(coin_metadata); // Get the coin name
-        let coin_names = string::utf8(b"coins"); // Convert byte string to UTF-8 string
 
-        helper_bag(protocol_bag, coin_names, protocol_balance); // Update protocol bag with protocol balance
-        helper_bag(loan_platform_bag, coin_names, loan_balance); // Update loan platform bag with loan balance
+        helper_bag(&mut protocol.balance, _name, protocol_balance); // Update protocol bag with protocol balance
+        helper_bag(&mut loan_platform.balance, _name, loan_balance); // Update loan platform bag with loan balance
 
         loan_acc.loan_amount = 0; // Set loan amount to 0
         loan_acc.last_payment_date = timestamp_ms(c); // Set last payment date to current timestamp
@@ -187,5 +183,21 @@ module loan::loan { // Define the module loan::loan
     // call the init function
     public fun test_init(ctx: &mut TxContext) {
         init( ctx);
+    }
+
+    // #[test_only]
+    // public fun get_protocol_bag_balance(self: &Protocol, coin: String) : u64 {
+    //     let balance = bag::borrow(&self.balance, coin);
+    //     let amount = balance::value(&balance);
+    //     amount
+    // }
+    #[test_only]
+    public fun get_bag_fund<T>(self: &Protocol, coin_metada: &CoinMetadata<T>): &Balance<T> {
+            bag::borrow(&self.balance, coin::get_name(coin_metada))
+    }
+
+    #[test_only]
+    public fun get_bag_fund2<T>(self: &LoanPlatform<T>, coin_metada: &CoinMetadata<T>): &Balance<T> {
+            bag::borrow(&self.balance, coin::get_name(coin_metada))
     }
 }
