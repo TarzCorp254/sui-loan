@@ -1,4 +1,3 @@
-#[allow(lint(self_transfer))] // Allow self-transfer lint
 module loan::loan { // Define the module loan::loan
     use sui::tx_context::{sender}; // Import the sender function from sui::tx_context
     use sui::coin::{Self, Coin, CoinMetadata}; // Import Coin, CoinMetadata from sui::coin
@@ -46,13 +45,13 @@ module loan::loan { // Define the module loan::loan
         id: UID // Unique identifier
     }
 
-    // public fun init(ctx: &mut TxContext) {
-    //     transfer::share_object(Protocol {
-    //         id: object::new(ctx),
-    //         balance: bag::new(ctx)
-    //     });
-    //     transfer::transfer(AdminCap{id: object::new(ctx)}, sender(ctx));
-    // }
+    fun init(ctx: &mut TxContext) {
+        transfer::share_object(Protocol {
+            id: object::new(ctx),
+            balance: bag::new(ctx)
+        });
+        transfer::transfer(AdminCap{id: object::new(ctx)}, sender(ctx));
+    }
     // Initialize protocol and admin cap (commented out)
 
     /// Create a new loan platform.
@@ -181,5 +180,12 @@ module loan::loan { // Define the module loan::loan
         else { // If bag does not contain the coin
             bag::add(bag_, coin, balance); // Add new coin balance to the bag
         };
+    }
+
+    // ============  Test-Only ============ 
+    #[test_only]
+    // call the init function
+    public fun test_init(ctx: &mut TxContext) {
+        init( ctx);
     }
 }
